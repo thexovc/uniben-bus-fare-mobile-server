@@ -44,7 +44,7 @@ const payBusFee = async (req, res) => {
       sender: senderEmail,
       receiver: receiverEmail,
       amount,
-      status: "success",
+      status: "pay",
       hash,
     });
 
@@ -57,6 +57,46 @@ const payBusFee = async (req, res) => {
     console.log(err);
 
     res.status(500).json({ error: err.message });
+  }
+};
+
+const deposit = async (req, res) => {
+  try {
+    const { email, amount } = req.body;
+
+    // Find the user by their email
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update the user's wallet balance
+    user.wallet += amount;
+    await user.save();
+
+    // Generate a simplified hash for the transaction
+    const hash = `trx-${Math.random()
+      .toString(36)
+      .substr(2, 10)
+      .toUpperCase()}`;
+
+    // Create a new transaction
+    const transaction = new transactionModel({
+      sender: email,
+      receiver: email,
+      amount,
+      hash,
+      status: "deposit",
+    });
+
+    // Save the transaction to the database
+    await transaction.save();
+
+    res.status(200).json({ message: "Deposit successful" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -92,7 +132,7 @@ const driverTrx = async (req, res) => {
 
 module.exports = {
   payBusFee,
-
+  deposit,
   driverTrx,
   studentTrx,
 };
