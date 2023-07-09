@@ -3,7 +3,9 @@ const bcrypt = require("bcrypt");
 
 const register = async (req, res) => {
   try {
-    const { email, password, username, userType } = req.body;
+    const { email, password, username } = req.body;
+
+    console.log(req.body);
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -12,12 +14,14 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       username,
-      userType,
     });
 
     const user = await newUser.save();
+    console.log({ user });
+
     res.json(user);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Failed to create user" });
   }
 };
@@ -25,6 +29,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(req.body);
 
     const user = await userModel.findOne({ email });
     if (!user) {
@@ -32,12 +37,15 @@ const login = async (req, res) => {
     }
 
     const result = await bcrypt.compare(password, user.password);
+    console.log({ result });
     if (result) {
       return res.json({ message: "Authentication successful" });
     } else {
       return res.status(401).json({ error: "Invalid password" });
     }
   } catch (err) {
+    console.log(err);
+
     res.status(500).json({ error: "Failed to authenticate user" });
   }
 };
@@ -45,8 +53,12 @@ const login = async (req, res) => {
 const getAllUser = async (req, res) => {
   try {
     const users = await userModel.find();
+    console.log(users);
+
     res.json(users);
   } catch (err) {
+    console.log(err);
+
     res.status(500).json({ error: "Failed to get users" });
   }
 };

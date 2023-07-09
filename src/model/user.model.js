@@ -18,6 +18,7 @@ const userSchema = new Schema({
     type: String,
     enum: ["driver", "student"],
     required: true,
+    default: "student",
   },
   wallet: {
     type: Number,
