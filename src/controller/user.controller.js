@@ -56,7 +56,7 @@ const getUser = async (req, res) => {
     const user = await userModel.findOne({ email });
     console.log(user);
 
-    res.json(user);
+    res.json({ user });
   } catch (err) {
     console.log(err);
 
