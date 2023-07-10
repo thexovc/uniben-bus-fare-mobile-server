@@ -9,7 +9,7 @@ const { Charge } = resources;
 
 const payBusFee = async (req, res) => {
   try {
-    const { senderEmail, receiverEmail, amount } = req.body;
+    const { senderEmail, receiverEmail, amount, userEmail } = req.body;
 
     const sender = await userModel.findOne({ email: senderEmail });
     if (!sender) {
@@ -52,7 +52,10 @@ const payBusFee = async (req, res) => {
 
     console.log(transaction);
 
-    res.json({ message: "Transaction successful", transaction });
+    const user = await userModel.findOne({ email: userEmail });
+    console.log(user);
+
+    res.json({ message: "Transaction successful", transaction, user });
   } catch (err) {
     console.log(err);
 
