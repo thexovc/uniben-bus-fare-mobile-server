@@ -123,6 +123,7 @@ const trxCount = async (req, res) => {
 
     const count = await transactionModel.countDocuments({
       $or: [{ receiver: email }, { sender: email }],
+      status: "pay",
     });
 
     res.json({ count });
