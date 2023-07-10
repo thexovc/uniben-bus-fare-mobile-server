@@ -100,39 +100,37 @@ const deposit = async (req, res) => {
   }
 };
 
-const studentTrx = async (req, res) => {
+const userTrx = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const transactions = await transactionModel.find({ sender: email });
-
-    console.log(transactions);
+    const transactions = await transactionModel.find({
+      $or: [{ sender: email }, { receiver: email }],
+    });
 
     res.json(transactions);
-  } catch (err) {
-    console.log(err);
-
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-const driverTrx = async (req, res) => {
+const trxCount = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const transactions = await transactionModel.find({ receiver: email });
-    console.log(transactions);
-    res.json(transactions);
-  } catch (err) {
-    console.log(err);
+    const count = await transactionModel.countDocuments({
+      $or: [{ receiver: email }, { sender: email }],
+    });
 
-    res.status(500).json({ error: err.message });
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports = {
   payBusFee,
   deposit,
-  driverTrx,
-  studentTrx,
+  userTrx,
+  trxCount,
 };

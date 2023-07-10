@@ -17,6 +17,7 @@ const transactionSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["deposit", "pay"],
+      default: "pay",
     },
     hash: {
       type: String,

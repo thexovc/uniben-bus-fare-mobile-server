@@ -50,12 +50,13 @@ const login = async (req, res) => {
   }
 };
 
-const getAllUser = async (req, res) => {
+const getUser = async (req, res) => {
   try {
-    const users = await userModel.find();
-    console.log(users);
+    const { email } = req.body;
+    const user = await userModel.findOne({ email });
+    console.log(user);
 
-    res.json(users);
+    res.json(user);
   } catch (err) {
     console.log(err);
 
