@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const register = async (req, res) => {
   try {
-    const { email, password, username } = req.body;
+    const { email, password, username, userType } = req.body;
 
     console.log(req.body);
 
@@ -14,6 +14,7 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       username,
+      userType,
     });
 
     const user = await newUser.save();
